@@ -4,10 +4,11 @@
       <tr>
         <th>UTM <%= utm_type.capitalize %></th>
         <th class="text-right">Views</th>
+        <th class="text-right">%</th>
       </tr>
     </thead>
     <tbody>
-      <% utm_data.each do |data| %>
+      <% utm_data.take(10).each do |data| %>
         <tr>
           <td>
             <%= link_to site_path(params[:site],
@@ -20,6 +21,9 @@
           </td>
           <td class="text-right">
             <%= number_with_delimiter(data.total) %>
+          </td>
+          <td class="text-right text-muted">
+            <%= data.percentage_display %>
           </td>
         </tr>
       <% end %>

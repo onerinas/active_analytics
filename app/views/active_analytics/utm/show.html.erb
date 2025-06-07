@@ -1,10 +1,74 @@
+<!-- Performance Metrics -->
+<section class="card">
+  <h3>UTM <%= @utm_type.capitalize %>: <strong><%= @utm_value %></strong></h3>
+  <div class="row">
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= number_with_delimiter(@total_views) %></div>
+        <div class="metric-label">Total Views</div>
+        <% if @growth_rate != 0 %>
+          <div class="metric-change <%= @growth_rate > 0 ? 'positive' : 'negative' %>">
+            <%= @growth_rate > 0 ? '+' : '' %><%= @growth_rate %>% vs previous period
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= @pages_count %></div>
+        <div class="metric-label">Unique Pages</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= @avg_views_per_page %></div>
+        <div class="metric-label">Avg Views/Page</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Traffic Trend -->
 <section class="card">
   <%= render "/active_analytics/sites/histogram_header", histogram: @histogram, previous_histogram: @previous_histogram %>
   <%= render "/active_analytics/sites/histogram", histogram: @histogram %>
 </section>
 
+<!-- Related UTM Parameters -->
+<% if defined?(@related_sources) || defined?(@related_campaigns) || defined?(@related_mediums) %>
+<div class="row">
+  <% if defined?(@related_sources) && @related_sources.any? %>
+  <div class="col">
+    <section class="card">
+      <h3>Related Sources</h3>
+      <%= render "utm_table", utm_data: @related_sources.take(10), utm_type: 'source' %>
+    </section>
+  </div>
+  <% end %>
+
+  <% if defined?(@related_mediums) && @related_mediums.any? %>
+  <div class="col">
+    <section class="card">
+      <h3>Related Mediums</h3>
+      <%= render "utm_table", utm_data: @related_mediums.take(10), utm_type: 'medium' %>
+    </section>
+  </div>
+  <% end %>
+
+  <% if defined?(@related_campaigns) && @related_campaigns.any? %>
+  <div class="col">
+    <section class="card">
+      <h3>Related Campaigns</h3>
+      <%= render "utm_table", utm_data: @related_campaigns.take(10), utm_type: 'campaign' %>
+    </section>
+  </div>
+  <% end %>
+</div>
+<% end %>
+
+<!-- Landing Pages Performance -->
 <section class="card">
-  <h3>UTM <%= @utm_type.capitalize %>: <%= @utm_value %></h3>
+  <h3>Landing Pages Performance</h3>
   <p class="text-muted">Pages visited from this UTM <%= @utm_type %></p>
-  <%= render "table", pages: @pages %>
+  <%= render "utm_pages_table", pages: @pages, total_views: @total_views %>
 </section>

@@ -21,6 +21,20 @@
 
       <% if controller_name == "utm" %>
         &nbsp;/&nbsp;<%= link_to "utm", utm_path(params[:site], from: params[:from], to: params[:to]) %>
+        <% case action_name %>
+        <% when "sources" %>
+          &nbsp;/&nbsp;sources
+        <% when "mediums" %>
+          &nbsp;/&nbsp;mediums
+        <% when "campaigns" %>
+          &nbsp;/&nbsp;campaigns
+        <% when "terms" %>
+          &nbsp;/&nbsp;terms
+        <% when "contents" %>
+          &nbsp;/&nbsp;contents
+        <% when "show" %>
+          &nbsp;/&nbsp;<%= params[:utm_type] %>&nbsp;/&nbsp;<%= params[:utm_value] %>
+        <% end %>
       <% end %>
 
       <div class="menubutton">

@@ -16,6 +16,8 @@ ActiveAnalytics::Engine.routes.draw do
   get "/:site/utm/sources", to: "utm#sources", constraints: {site: /[^\/]+/}, as: :utm_sources
   get "/:site/utm/mediums", to: "utm#mediums", constraints: {site: /[^\/]+/}, as: :utm_mediums
   get "/:site/utm/campaigns", to: "utm#campaigns", constraints: {site: /[^\/]+/}, as: :utm_campaigns
+  get "/:site/utm/terms", to: "utm#terms", constraints: {site: /[^\/]+/}, as: :utm_terms
+  get "/:site/utm/contents", to: "utm#contents", constraints: {site: /[^\/]+/}, as: :utm_contents
   get "/:site/utm/:utm_type/:utm_value", to: "utm#show", constraints: {site: /[^\/]+/}, as: :utm_show
 
   # Pages

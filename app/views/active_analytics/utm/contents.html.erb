@@ -4,9 +4,9 @@
     <%= link_to "Overview", utm_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
     <%= link_to "Sources", utm_sources_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
     <%= link_to "Mediums", utm_mediums_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
-    <span class="nav-link active">Campaigns</span>
+    <%= link_to "Campaigns", utm_campaigns_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
     <%= link_to "Terms", utm_terms_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
-    <%= link_to "Contents", utm_contents_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+    <span class="nav-link active">Contents</span>
   </div>
 </section>
 
@@ -16,7 +16,7 @@
 </section>
 
 <section class="card">
-  <h3>UTM Campaigns</h3>
-  <p class="text-muted">Marketing campaigns tracked through UTM parameters</p>
-  <%= render "utm_table", utm_data: @utm_campaigns, utm_type: 'campaign' %>
+  <h3>UTM Contents</h3>
+  <p class="text-muted">Content variations and A/B test identifiers in your campaigns</p>
+  <%= render "utm_table", utm_data: @utm_contents, utm_type: 'content' %>
 </section>

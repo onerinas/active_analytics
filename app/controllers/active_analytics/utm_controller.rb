@@ -5,9 +5,19 @@ module ActiveAnalytics
     before_action :require_date_range
 
     def index
-      @utm_sources = current_views_per_days.top(50).group_by_utm_source
-      @utm_mediums = current_views_per_days.top(50).group_by_utm_medium
-      @utm_campaigns = current_views_per_days.top(50).group_by_utm_campaign
+      # Overview statistics
+      @overview_stats = current_views_per_days.utm_overview_stats
+      @previous_overview_stats = previous_views_per_days.utm_overview_stats
+
+      # Top performers
+      @utm_sources = current_views_per_days.top(10).group_by_utm_source
+      @utm_mediums = current_views_per_days.top(10).group_by_utm_medium
+      @utm_campaigns = current_views_per_days.top(10).group_by_utm_campaign
+
+      # Campaign performance analysis
+      @campaign_performance = current_views_per_days.campaign_performance_analysis.take(15)
+
+      # Histograms
       @histogram = Histogram.new(current_views_per_days.where.not(utm_source: [nil, ""]).order_by_date.group_by_date, from_date, to_date)
       @previous_histogram = Histogram.new(previous_views_per_days.where.not(utm_source: [nil, ""]).order_by_date.group_by_date, previous_from_date, previous_to_date)
     end
@@ -30,7 +40,19 @@ module ActiveAnalytics
       @previous_histogram = Histogram.new(previous_views_per_days.where.not(utm_campaign: [nil, ""]).order_by_date.group_by_date, previous_from_date, previous_to_date)
     end
 
-    def show
+    def terms
+      @utm_terms = current_views_per_days.top(100).group_by_utm_term
+      @histogram = Histogram.new(current_views_per_days.where.not(utm_term: [nil, ""]).order_by_date.group_by_date, from_date, to_date)
+      @previous_histogram = Histogram.new(previous_views_per_days.where.not(utm_term: [nil, ""]).order_by_date.group_by_date, previous_from_date, previous_to_date)
+    end
+
+    def contents
+      @utm_contents = current_views_per_days.top(100).group_by_utm_content
+      @histogram = Histogram.new(current_views_per_days.where.not(utm_content: [nil, ""]).order_by_date.group_by_date, from_date, to_date)
+      @previous_histogram = Histogram.new(previous_views_per_days.where.not(utm_content: [nil, ""]).order_by_date.group_by_date, previous_from_date, previous_to_date)
+    end
+
+        def show
       @utm_type = params[:utm_type]
       @utm_value = params[:utm_value]
 
@@ -38,19 +60,51 @@ module ActiveAnalytics
       when 'source'
         scope = current_views_per_days.where(utm_source: @utm_value)
         previous_scope = previous_views_per_days.where(utm_source: @utm_value)
+
+        @related_campaigns = scope.top(20).group_by_utm_campaign
+        @related_mediums = scope.top(20).group_by_utm_medium
       when 'medium'
         scope = current_views_per_days.where(utm_medium: @utm_value)
         previous_scope = previous_views_per_days.where(utm_medium: @utm_value)
+
+        @related_campaigns = scope.top(20).group_by_utm_campaign
+        @related_sources = scope.top(20).group_by_utm_source
       when 'campaign'
         scope = current_views_per_days.where(utm_campaign: @utm_value)
         previous_scope = previous_views_per_days.where(utm_campaign: @utm_value)
+
+        @related_sources = scope.top(20).group_by_utm_source
+        @related_mediums = scope.top(20).group_by_utm_medium
+      when 'term'
+        scope = current_views_per_days.where(utm_term: @utm_value)
+        previous_scope = previous_views_per_days.where(utm_term: @utm_value)
+
+        @related_campaigns = scope.top(20).group_by_utm_campaign
+        @related_sources = scope.top(20).group_by_utm_source
+      when 'content'
+        scope = current_views_per_days.where(utm_content: @utm_value)
+        previous_scope = previous_views_per_days.where(utm_content: @utm_value)
+
+        @related_campaigns = scope.top(20).group_by_utm_campaign
+        @related_sources = scope.top(20).group_by_utm_source
       else
         redirect_to utm_path(params[:site], from: params[:from], to: params[:to]) and return
       end
 
+      # Core metrics
+      @total_views = scope.sum(:total)
+      @previous_total_views = previous_scope.sum(:total)
+      @pages_count = scope.distinct.count(:page)
+      @avg_views_per_page = @pages_count > 0 ? (@total_views.to_f / @pages_count).round(1) : 0
+
+      # Growth calculation
+      @growth_rate = @previous_total_views > 0 ?
+        ((@total_views - @previous_total_views).to_f / @previous_total_views * 100).round(1) :
+        (@total_views > 0 ? 100.0 : 0.0)
+
       @histogram = Histogram.new(scope.order_by_date.group_by_date, from_date, to_date)
       @previous_histogram = Histogram.new(previous_scope.order_by_date.group_by_date, previous_from_date, previous_to_date)
-      @pages = scope.top(100).group_by_page
+      @pages = scope.top(50).group_by_page
     end
   end
 end

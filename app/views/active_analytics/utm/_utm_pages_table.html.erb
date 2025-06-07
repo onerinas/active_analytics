@@ -1,0 +1,31 @@
+<% if pages.any? %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th class="text-right">Views</th>
+        <th class="text-right">% of Traffic</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% pages.each do |page| %>
+        <% percentage = total_views > 0 ? (page.total.to_f / total_views * 100).round(1) : 0 %>
+        <tr>
+          <td>
+            <%= link_to page_path(page.url), class: "text-dark" do %>
+              <%= page.url %>
+            <% end %>
+          </td>
+          <td class="text-right">
+            <%= number_with_delimiter(page.total) %>
+          </td>
+          <td class="text-right text-muted">
+            <%= percentage %>%
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted">No page data available for this UTM parameter.</p>
+<% end %>

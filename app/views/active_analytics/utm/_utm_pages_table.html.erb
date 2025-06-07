@@ -12,7 +12,7 @@
         <% percentage = total_views > 0 ? (page.total.to_f / total_views * 100).round(1) : 0 %>
         <tr>
           <td>
-            <%= link_to page_path(page.url), class: "text-dark" do %>
+            <%= link_to page_path(site: page.host, page: page.path), class: "text-dark" do %>
               <%= page.url %>
             <% end %>
           </td>

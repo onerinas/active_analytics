@@ -10,6 +10,9 @@
     - Detailed UTM parameter views with page drill-downs
     - New database migration generated with proper Rails timestamp: `rails generate migration AddUtmSupportToActiveAnalyticsViewsPerDays`
     - Works with both synchronous and asynchronous (Redis queue) recording modes
+    - Added UTM parameter filtering to main dashboard
+    - Added UTM parameter links in referrer analytics
+    - Added UTM parameter state preservation in date range filters
 
 ## Version 0.4.1 (2025-03-13)
 

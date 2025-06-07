@@ -20,7 +20,7 @@
             <% end %>
           </td>
           <td class="text-right">
-            <%= number_with_delimiter(data.total) %>
+            <%= format_view_count(data.total) %>
           </td>
           <td class="text-right text-muted">
             <%= data.percentage_display %>

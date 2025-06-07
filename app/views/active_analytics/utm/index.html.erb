@@ -3,7 +3,7 @@
   <h3>UTM Analytics Overview</h3>
   <div class="grid-auto" style="gap: 0; grid-template-columns: repeat(4, 1fr);">
     <div class="metric text-center">
-      <div class="metric-value" style="font-size: 2rem; font-weight: 700;"><%= number_with_delimiter(@overview_stats[:utm_views]) %></div>
+      <div class="metric-value" style="font-size: 2rem; font-weight: 700;"><%= format_view_count(@overview_stats[:utm_views]) %></div>
       <div class="metric-label text-muted" style="font-size: 1rem;">UTM Views</div>
       <div class="metric-percentage text-muted small"><%= @overview_stats[:utm_percentage] %>% of total traffic</div>
     </div>
@@ -65,7 +65,7 @@
             <span class="text-muted"><%= campaign.source_medium %></span>
           </td>
           <td class="text-right">
-            <%= number_with_delimiter(campaign.total) %>
+            <%= format_view_count(campaign.total) %>
           </td>
           <td class="text-right">
             <%= campaign.pages_count %>

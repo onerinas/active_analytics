@@ -16,7 +16,7 @@
         <% end %>
       </div>
       <p class="text-muted mb-0">
-        Showing <%= number_with_delimiter(@filtered_total_views) %> views
+        Showing <%= format_view_count(@filtered_total_views) %> views
         (<%= @filter_percentage %>% of total traffic)
       </p>
     </div>

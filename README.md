@@ -17,6 +17,7 @@ Simple traffic analytics for the win of privacy.
 * **Page views**: What are the pages that are the most viewed in your application.
 * **Next/previous page**: What are the entry and exit pages for a given page of your application.
 * **Browser statistics**: What browsers and which versions are visiting your site.
+* **UTM Analytics**: Track marketing campaign performance with UTM parameters (source, medium, campaign, term, content).
 
 <img src="app/assets/images/active_analytics_screenshot.png" alt="active analytics logo" style="max-width: 100%; margin: 24px 0;" />
 
@@ -124,6 +125,42 @@ In that case only the last minute will be shifted to the next day, even if the f
 This small imperfection allows a simpler implementation for now.
 Keep it simple !
 
+## UTM Parameter Tracking
+
+ActiveAnalytics automatically captures UTM parameters from your website URLs to help track marketing campaign effectiveness. UTM parameters are standard query string parameters used for tracking traffic sources.
+
+### Supported UTM Parameters
+
+- **utm_source**: Identifies the source of traffic (e.g., google, newsletter, facebook)
+- **utm_medium**: Identifies the marketing medium (e.g., email, cpc, social, banner)
+- **utm_campaign**: Identifies the specific campaign (e.g., summer_sale, product_launch)
+- **utm_term**: Identifies search terms (for paid search campaigns)
+- **utm_content**: Identifies specific content or ad variation (for A/B testing)
+
+### Example Usage
+
+When someone visits your site with a URL like:
+```
+https://yoursite.com/products?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale
+```
+
+ActiveAnalytics will automatically track these UTM parameters and display them in your analytics dashboard under "UTM Analytics".
+
+### UTM Analytics Dashboard
+
+The UTM Analytics section provides:
+- **UTM Sources**: Top traffic sources from your campaigns
+- **UTM Mediums**: Most effective marketing mediums
+- **UTM Campaigns**: Performance of individual campaigns
+- **Detailed Views**: Page-level analytics for each UTM parameter
+
+### Privacy & UTM Parameters
+
+UTM tracking maintains ActiveAnalytics' privacy-first approach:
+- No personal data is stored
+- Only campaign parameters are tracked
+- No cross-site tracking
+- Data stays in your database
 
 ## Authentication and permissions
 

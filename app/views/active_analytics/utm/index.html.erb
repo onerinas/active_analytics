@@ -1,0 +1,120 @@
+<!-- UTM Overview Statistics -->
+<section class="card mb-4">
+  <h3>UTM Analytics Overview</h3>
+  <div class="row text-center">
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= number_with_delimiter(@overview_stats[:utm_views]) %></div>
+        <div class="metric-label">UTM Views</div>
+        <div class="metric-percentage text-muted small"><%= @overview_stats[:utm_percentage] %>% of total traffic</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= @overview_stats[:unique_campaigns] > 0 ? @overview_stats[:unique_campaigns] : 'N/A' %></div>
+        <div class="metric-label">Active Campaigns</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="metric">
+        <div class="metric-value"><%= @overview_stats[:unique_sources] > 0 ? @overview_stats[:unique_sources] : 'N/A' %></div>
+        <div class="metric-label">Traffic Sources</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="metric">
+        <% landing = @overview_stats[:top_landing_page] %>
+        <div class="metric-value">
+          <% if landing.present? %>
+            <span title="<%= landing %>"><%= landing.truncate(18) %></span>
+          <% else %>
+            N/A
+          <% end %>
+        </div>
+        <div class="metric-label">Top Landing Page</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Traffic Trend -->
+<section class="card">
+  <%= render "/active_analytics/sites/histogram_header", histogram: @histogram, previous_histogram: @previous_histogram %>
+  <%= render "/active_analytics/sites/histogram", histogram: @histogram %>
+</section>
+
+<!-- Campaign Performance Analysis -->
+<% if @campaign_performance.any? %>
+<section class="card">
+  <h3>Campaign Performance Analysis</h3>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Campaign</th>
+        <th>Source / Medium</th>
+        <th class="text-right">Views</th>
+        <th class="text-right">Pages</th>
+        <th class="text-right">Avg/Page</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @campaign_performance.each do |campaign| %>
+        <tr>
+          <td>
+            <%= link_to site_path(params[:site],
+                              from: params[:from],
+                              to: params[:to],
+                              utm_campaign: campaign.campaign),
+                        class: "text-dark" do %>
+              <strong><%= campaign.campaign %></strong>
+            <% end %>
+          </td>
+          <td>
+            <span class="text-muted"><%= campaign.source_medium %></span>
+          </td>
+          <td class="text-right">
+            <%= number_with_delimiter(campaign.total) %>
+          </td>
+          <td class="text-right">
+            <%= campaign.pages_count %>
+          </td>
+          <td class="text-right">
+            <%= campaign.avg_per_page %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
+<% end %>
+
+<!-- UTM Breakdown -->
+<div class="row">
+  <div class="col">
+    <section class="card">
+      <h3>
+        Top Sources
+        <%= link_to "View all", utm_sources_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+      </h3>
+      <%= render "utm_table_with_percentage", utm_data: @utm_sources, utm_type: 'source' %>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card">
+      <h3>
+        Top Mediums
+        <%= link_to "View all", utm_mediums_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+      </h3>
+      <%= render "utm_table_with_percentage", utm_data: @utm_mediums, utm_type: 'medium' %>
+    </section>
+  </div>
+</div>
+
+<section class="card">
+  <h3>
+    Top Campaigns
+    <%= link_to "View all", utm_campaigns_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+  </h3>
+  <%= render "utm_table_with_percentage", utm_data: @utm_campaigns, utm_type: 'campaign' %>
+</section>

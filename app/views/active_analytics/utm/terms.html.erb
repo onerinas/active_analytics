@@ -1,0 +1,22 @@
+<!-- UTM Navigation -->
+<section class="card">
+  <div class="utm-navigation">
+    <%= link_to "Overview", utm_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+    <%= link_to "Sources", utm_sources_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+    <%= link_to "Mediums", utm_mediums_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+    <%= link_to "Campaigns", utm_campaigns_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+    <span class="nav-link active">Terms</span>
+    <%= link_to "Contents", utm_contents_path(params[:site], from: params[:from], to: params[:to]), class: "nav-link" %>
+  </div>
+</section>
+
+<section class="card">
+  <%= render "/active_analytics/sites/histogram_header", histogram: @histogram, previous_histogram: @previous_histogram %>
+  <%= render "/active_analytics/sites/histogram", histogram: @histogram %>
+</section>
+
+<section class="card">
+  <h3>UTM Terms</h3>
+  <p class="text-muted">Search terms and keywords tracked in your campaigns</p>
+  <%= render "utm_table", utm_data: @utm_terms, utm_type: 'term' %>
+</section>

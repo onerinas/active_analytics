@@ -1,3 +1,35 @@
+<!-- Active UTM Filters Display -->
+<% if @active_utm_filters.any? %>
+<section class="card filter-state">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h4>Filtered View</h4>
+      <div class="active-filters">
+        <% @active_utm_filters.each do |param, value| %>
+          <span class="filter-tag">
+            <%= param.to_s.humanize %>: <strong><%= value %></strong>
+            <%= link_to site_path(params[:site], from: params[:from], to: params[:to]),
+                        class: "filter-remove", title: "Remove this filter" do %>
+              ×
+            <% end %>
+          </span>
+        <% end %>
+      </div>
+      <p class="text-muted mb-0">
+        Showing <%= number_with_delimiter(@filtered_total_views) %> views
+        (<%= @filter_percentage %>% of total traffic)
+      </p>
+    </div>
+    <div>
+      <%= link_to "Clear All Filters",
+                  site_path(params[:site], from: params[:from], to: params[:to]),
+                  class: "btn btn-outline-secondary btn-sm" %>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<!-- Traffic Overview -->
 <section class="card">
   <%= render "/active_analytics/sites/histogram_header", histogram: @histogram, previous_histogram: @previous_histogram %>
   <%= render "/active_analytics/sites/histogram", histogram: @histogram %>
@@ -17,5 +49,71 @@
   <li class="card">
     <h3>Browsers <%= link_to "view all", browsers_path(from: params[:from], to: params[:to]) %></h3>
     <%= render "/active_analytics/browsers/table", browsers: @browsers %>
+  </li>
+
+  <li class="card">
+    <h3>
+      Campaign Analytics
+      <%= link_to "detailed view", utm_path(from: params[:from], to: params[:to]),
+                  class: "btn btn-sm btn-outline-secondary float-right" %>
+    </h3>
+
+    <% if @utm_sources&.any? || @utm_campaigns&.any? || @utm_mediums&.any? %>
+      <div class="utm-summary mb-3">
+        <div class="row text-center">
+          <div class="col">
+            <div class="metric-small">
+              <div class="metric-value"><%= @utm_sources.length > 0 ? @utm_sources.length : 'N/A' %></div>
+              <div class="metric-label">Sources</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="metric-small">
+              <div class="metric-value"><%= @utm_mediums&.length.to_i > 0 ? @utm_mediums.length : 'N/A' %></div>
+              <div class="metric-label">Mediums</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="metric-small">
+              <div class="metric-value"><%= @utm_campaigns&.length.to_i > 0 ? @utm_campaigns.length : 'N/A' %></div>
+              <div class="metric-label">Campaigns</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="metric-small">
+              <% landing = @utm_sources&.first&.value %>
+              <div class="metric-value">
+                <% if landing.present? %>
+                  <span title="<%= landing %>"><%= landing.truncate(18) %></span>
+                <% else %>
+                  N/A
+                <% end %>
+              </div>
+              <div class="metric-label">Top Landing Page</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Show most relevant UTM breakdown based on what data exists -->
+      <% if @utm_campaigns&.any? %>
+        <h4 class="h6 text-muted mb-2">Top Campaigns</h4>
+        <%= render "/active_analytics/utm/utm_table", utm_data: @utm_campaigns.first(5), utm_type: 'campaign' %>
+      <% elsif @utm_sources&.any? %>
+        <h4 class="h6 text-muted mb-2">Top Sources</h4>
+        <%= render "/active_analytics/utm/utm_table", utm_data: @utm_sources.first(5), utm_type: 'source' %>
+      <% elsif @utm_mediums&.any? %>
+        <h4 class="h6 text-muted mb-2">Top Mediums</h4>
+        <%= render "/active_analytics/utm/utm_table", utm_data: @utm_mediums.first(5), utm_type: 'medium' %>
+      <% end %>
+    <% else %>
+      <div class="empty-state">
+        <p class="text-muted">No campaign tracking data yet.</p>
+        <small class="text-muted">
+          Add UTM parameters to your marketing URLs to track campaign performance.<br>
+          Example: <code>?utm_source=google&utm_medium=cpc&utm_campaign=summer_sale</code>
+        </small>
+      </div>
+    <% end %>
   </li>
 </ul>

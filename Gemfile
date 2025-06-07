@@ -6,7 +6,7 @@ gemspec
 
 group :development do
   gem 'sqlite3'
-  gem "redis"
+  gem "redis", "~> 5.0"
 end
 
 gem "browser"

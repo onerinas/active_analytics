@@ -63,20 +63,33 @@
         <div class="row text-center">
           <div class="col">
             <div class="metric-small">
-              <div class="metric-value"><%= @utm_sources.length %></div>
+              <div class="metric-value"><%= @utm_sources.length > 0 ? @utm_sources.length : 'N/A' %></div>
               <div class="metric-label">Sources</div>
             </div>
           </div>
           <div class="col">
             <div class="metric-small">
-              <div class="metric-value"><%= @utm_mediums&.length || 0 %></div>
+              <div class="metric-value"><%= @utm_mediums&.length.to_i > 0 ? @utm_mediums.length : 'N/A' %></div>
               <div class="metric-label">Mediums</div>
             </div>
           </div>
           <div class="col">
             <div class="metric-small">
-              <div class="metric-value"><%= @utm_campaigns&.length || 0 %></div>
+              <div class="metric-value"><%= @utm_campaigns&.length.to_i > 0 ? @utm_campaigns.length : 'N/A' %></div>
               <div class="metric-label">Campaigns</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="metric-small">
+              <% landing = @utm_sources&.first&.value %>
+              <div class="metric-value">
+                <% if landing.present? %>
+                  <span title="<%= landing %>"><%= landing.truncate(18) %></span>
+                <% else %>
+                  N/A
+                <% end %>
+              </div>
+              <div class="metric-label">Top Landing Page</div>
             </div>
           </div>
         </div>

@@ -33,6 +33,13 @@ module ActiveAnalytics
       scope
     end
 
+    def self.for_views_scope(views_scope)
+      site = views_scope.first&.site
+      dates = views_scope.distinct.pluck(:date)
+      return none if site.nil? || dates.empty?
+      where(site: site, date: dates).group(:name).select("name, SUM(total) AS total")
+    end
+
     def to_param
       name
     end

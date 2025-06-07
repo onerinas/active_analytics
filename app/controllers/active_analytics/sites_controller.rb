@@ -19,7 +19,11 @@ module ActiveAnalytics
       @previous_histogram = Histogram.new(previous_scope.order_by_date.group_by_date, previous_from_date, previous_to_date)
       @referrers = scope.top.group_by_referrer_site
       @pages = scope.top.group_by_page
-      @browsers = BrowsersPerDay.filter_by(params).group_by_name.top
+      if utm_filters.any?
+        @browsers = BrowsersPerDay.for_views_scope(scope)
+      else
+        @browsers = BrowsersPerDay.filter_by(params).group_by_name.top
+      end
 
       # UTM data (showing breakdown within current filters)
       @utm_sources = scope.top(10).group_by_utm_source

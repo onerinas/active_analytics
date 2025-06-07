@@ -34,7 +34,7 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
       .where(utm_source: "google")
       .where(utm_campaign: "summer_sale")
 
-    assert_equal 50, scope.sum(:total)
+    assert_equal 100, scope.sum(:total)
 
     pages = scope.group_by_page
     assert_equal 1, pages.length
@@ -73,12 +73,12 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
 
     assert_equal "google", summer_campaign.source
     assert_equal "cpc", summer_campaign.medium
-    assert_equal 50, summer_campaign.total
+    assert_equal 100, summer_campaign.total
     assert_equal 1, summer_campaign.pages_count
 
     assert_equal "facebook", brand_campaign.source
     assert_equal "social", brand_campaign.medium
-    assert_equal 100, brand_campaign.total
+    assert_equal 50, brand_campaign.total
     assert_equal 2, brand_campaign.pages_count
   end
 
@@ -90,13 +90,13 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
     google_source = utm_sources.find { |s| s.value == "google" }
     facebook_source = utm_sources.find { |s| s.value == "facebook" }
 
-    # Google: 50 out of 150 UTM views = 33.3%
-    assert_equal 33.3, google_source.percentage
-    assert_equal "33.3%", google_source.percentage_display
+    # Google: 100 out of 150 UTM views = 66.7%
+    assert_equal 66.7, google_source.percentage
+    assert_equal "66.7%", google_source.percentage_display
 
-    # Facebook: 100 out of 150 UTM views = 66.7%
-    assert_equal 66.7, facebook_source.percentage
-    assert_equal "66.7%", facebook_source.percentage_display
+    # Facebook: 50 out of 150 UTM views = 33.3%
+    assert_equal 33.3, facebook_source.percentage
+    assert_equal "33.3%", facebook_source.percentage_display
   end
 
   def test_filter_with_no_results
@@ -129,7 +129,7 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
       .where(date: today)
 
     # Should only get today's data
-    assert_equal 50, scope.sum(:total)  # Only today's Google data
+    assert_equal 100, scope.sum(:total)  # Only today's Google data
 
     pages = scope.group_by_page
     assert_equal 1, pages.length
@@ -143,12 +143,12 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
     # Further filter by campaign
     campaign_scope = base_scope.where(utm_campaign: "brand_awareness")
 
-    assert_equal 100, base_scope.sum(:total)
-    assert_equal 100, campaign_scope.sum(:total)  # All Facebook traffic is brand_awareness
+    assert_equal 50, base_scope.sum(:total)
+    assert_equal 50, campaign_scope.sum(:total)  # All Facebook traffic is brand_awareness
 
     # Further filter by medium
     medium_scope = campaign_scope.where(utm_medium: "social")
-    assert_equal 100, medium_scope.sum(:total)
+    assert_equal 50, medium_scope.sum(:total)
   end
 
   private
@@ -159,7 +159,7 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
       site: "site.test",
       page: "/products",
       date: Date.today,
-      total: 50,
+      total: 100,  # Increased from 50 to 100
       referrer_host: "example.com",
       referrer_path: "/search",
       utm_source: "google",
@@ -174,7 +174,7 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
       site: "site.test",
       page: "/about",
       date: Date.today,
-      total: 60,
+      total: 30,  # Decreased from 60 to 30
       referrer_host: "example.com",
       referrer_path: "/social",
       utm_source: "facebook",
@@ -187,7 +187,7 @@ class UtmIntegratedFilteringTest < ActiveSupport::TestCase
       site: "site.test",
       page: "/contact",
       date: Date.today,
-      total: 40,
+      total: 20,  # Decreased from 40 to 20
       referrer_host: "example.com",
       referrer_path: "/social",
       utm_source: "facebook",

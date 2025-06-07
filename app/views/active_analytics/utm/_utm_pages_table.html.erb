@@ -3,23 +3,23 @@
     <thead>
       <tr>
         <th>Page</th>
-        <th class="text-right">Views</th>
-        <th class="text-right">% of Traffic</th>
+        <th class="number">Views</th>
+        <th class="number text-muted">% of Traffic</th>
       </tr>
     </thead>
     <tbody>
       <% pages.each do |page| %>
         <% percentage = total_views > 0 ? (page.total.to_f / total_views * 100).round(1) : 0 %>
-        <tr>
+        <tr style="vertical-align: middle;">
           <td>
             <%= link_to page_path(site: page.host, page: page.path), class: "text-dark" do %>
               <%= page.url %>
             <% end %>
           </td>
-          <td class="text-right">
-            <%= number_with_delimiter(page.total) %>
+          <td class="number">
+            <%= format_view_count(page.total) %>
           </td>
-          <td class="text-right text-muted">
+          <td class="number text-muted">
             <%= percentage %>%
           </td>
         </tr>

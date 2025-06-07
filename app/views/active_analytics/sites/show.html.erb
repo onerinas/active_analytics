@@ -60,37 +60,29 @@
 
     <% if @utm_sources&.any? || @utm_campaigns&.any? || @utm_mediums&.any? %>
       <div class="utm-summary mb-3">
-        <div class="row text-center">
-          <div class="col">
-            <div class="metric-small">
-              <div class="metric-value"><%= @utm_sources.length > 0 ? @utm_sources.length : 'N/A' %></div>
-              <div class="metric-label">Sources</div>
-            </div>
+        <div class="grid-auto" style="gap: 0; grid-template-columns: repeat(4, 1fr);">
+          <div class="metric-small text-center">
+            <div class="metric-value" style="font-size: 2rem; font-weight: 700;"><%= @utm_sources.length > 0 ? @utm_sources.length : 'N/A' %></div>
+            <div class="metric-label text-muted" style="font-size: 1rem;">Sources</div>
           </div>
-          <div class="col">
-            <div class="metric-small">
-              <div class="metric-value"><%= @utm_mediums&.length.to_i > 0 ? @utm_mediums.length : 'N/A' %></div>
-              <div class="metric-label">Mediums</div>
-            </div>
+          <div class="metric-small text-center">
+            <div class="metric-value" style="font-size: 2rem; font-weight: 700;"><%= @utm_mediums&.length.to_i > 0 ? @utm_mediums.length : 'N/A' %></div>
+            <div class="metric-label text-muted" style="font-size: 1rem;">Mediums</div>
           </div>
-          <div class="col">
-            <div class="metric-small">
-              <div class="metric-value"><%= @utm_campaigns&.length.to_i > 0 ? @utm_campaigns.length : 'N/A' %></div>
-              <div class="metric-label">Campaigns</div>
-            </div>
+          <div class="metric-small text-center">
+            <div class="metric-value" style="font-size: 2rem; font-weight: 700;"><%= @utm_campaigns&.length.to_i > 0 ? @utm_campaigns.length : 'N/A' %></div>
+            <div class="metric-label text-muted" style="font-size: 1rem;">Campaigns</div>
           </div>
-          <div class="col">
-            <div class="metric-small">
-              <% landing = @utm_sources&.first&.value %>
-              <div class="metric-value">
-                <% if landing.present? %>
-                  <span title="<%= landing %>"><%= landing.truncate(18) %></span>
-                <% else %>
-                  N/A
-                <% end %>
-              </div>
-              <div class="metric-label">Top Landing Page</div>
+          <div class="metric-small text-center">
+            <% landing = @utm_sources&.first&.value %>
+            <div class="metric-value" style="font-size: 1.1rem; font-weight: 700;">
+              <% if landing.present? %>
+                <span title="<%= landing %>"><%= landing.truncate(18) %></span>
+              <% else %>
+                N/A
+              <% end %>
             </div>
+            <div class="metric-label text-muted" style="font-size: 1rem;">Top Landing Page</div>
           </div>
         </div>
       </div>

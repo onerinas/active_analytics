@@ -1,0 +1,34 @@
+<section class="card">
+  <%= render "/active_analytics/sites/histogram_header", histogram: @histogram, previous_histogram: @previous_histogram %>
+  <%= render "/active_analytics/sites/histogram", histogram: @histogram %>
+</section>
+
+<div class="row">
+  <div class="col">
+    <section class="card">
+      <h3>
+        UTM Sources
+        <%= link_to "View all", utm_sources_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+      </h3>
+      <%= render "utm_table", utm_data: @utm_sources.first(10), utm_type: 'source' %>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card">
+      <h3>
+        UTM Mediums
+        <%= link_to "View all", utm_mediums_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+      </h3>
+      <%= render "utm_table", utm_data: @utm_mediums.first(10), utm_type: 'medium' %>
+    </section>
+  </div>
+</div>
+
+<section class="card">
+  <h3>
+    UTM Campaigns
+    <%= link_to "View all", utm_campaigns_path, class: "btn btn-sm btn-outline-secondary float-right" %>
+  </h3>
+  <%= render "utm_table", utm_data: @utm_campaigns.first(10), utm_type: 'campaign' %>
+</section>

@@ -1,0 +1,26 @@
+<% if utm_data.any? %>
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>UTM <%= utm_type.capitalize %></th>
+        <th class="text-right">Views</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% utm_data.each do |data| %>
+        <tr>
+          <td>
+            <%= link_to utm_show_path(params[:site], utm_type: utm_type, utm_value: data.value), class: "text-dark" do %>
+              <%= data.value %>
+            <% end %>
+          </td>
+          <td class="text-right">
+            <%= number_with_delimiter(data.total) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted small">No UTM <%= utm_type %> data available for this period.</p>
+<% end %>

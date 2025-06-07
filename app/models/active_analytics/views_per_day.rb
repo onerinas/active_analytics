@@ -26,6 +26,13 @@ module ActiveAnalytics
       end
     end
 
+    class UtmData
+      attr_reader :value, :total
+      def initialize(value, total)
+        @value, @total = value, total
+      end
+    end
+
     def self.group_by_site
       group(:site).pluck("site, SUM(total)").map do |row|
         Site.new(row[0], row[1])
@@ -52,6 +59,36 @@ module ActiveAnalytics
 
     def self.group_by_date
       group(:date).select("date, sum(total) AS total")
+    end
+
+    def self.group_by_utm_source
+      where.not(utm_source: [nil, ""]).group(:utm_source).pluck("utm_source, SUM(total)").map do |row|
+        UtmData.new(row[0], row[1])
+      end
+    end
+
+    def self.group_by_utm_medium
+      where.not(utm_medium: [nil, ""]).group(:utm_medium).pluck("utm_medium, SUM(total)").map do |row|
+        UtmData.new(row[0], row[1])
+      end
+    end
+
+    def self.group_by_utm_campaign
+      where.not(utm_campaign: [nil, ""]).group(:utm_campaign).pluck("utm_campaign, SUM(total)").map do |row|
+        UtmData.new(row[0], row[1])
+      end
+    end
+
+    def self.group_by_utm_term
+      where.not(utm_term: [nil, ""]).group(:utm_term).pluck("utm_term, SUM(total)").map do |row|
+        UtmData.new(row[0], row[1])
+      end
+    end
+
+    def self.group_by_utm_content
+      where.not(utm_content: [nil, ""]).group(:utm_content).pluck("utm_content, SUM(total)").map do |row|
+        UtmData.new(row[0], row[1])
+      end
     end
 
     def self.to_histogram

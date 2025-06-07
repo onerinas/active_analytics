@@ -10,13 +10,17 @@
 
     <% if params[:site] %>
       <%= link_to params[:site], site_path(params[:site], from: params[:from], to: params[:to]) %>
-      
+
       <% if controller_name == "pages" %>
         &nbsp;/&nbsp;<%= link_to "pages", pages_path(params[:site], from: params[:from], to: params[:to]) %>
       <% end %>
 
       <% if controller_name == "referrers" %>
         &nbsp;/&nbsp;<%= link_to "referrers", referrers_path(params[:site], from: params[:from], to: params[:to]) %>
+      <% end %>
+
+      <% if controller_name == "utm" %>
+        &nbsp;/&nbsp;<%= link_to "utm", utm_path(params[:site], from: params[:from], to: params[:to]) %>
       <% end %>
 
       <div class="menubutton">

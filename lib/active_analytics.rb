@@ -30,6 +30,11 @@ module ActiveAnalytics
     if request.referrer.present?
       params[:referrer_host], params[:referrer_path] = ViewsPerDay.split_referrer(request.referrer)
     end
+
+    # Extract UTM parameters from the request
+    utm_params = extract_utm_parameters(request)
+    params.merge!(utm_params)
+
     ViewsPerDay.append(params)
 
     browser = Browser.new(request.headers["User-Agent"])
@@ -58,9 +63,25 @@ module ActiveAnalytics
 
   def self.queue_request_page(request)
     keys = [request.host, request.path]
+
+    # Always add referrer fields (even if nil) to maintain consistent key structure
     if request.referrer.present?
-      keys.concat(ViewsPerDay.split_referrer(request.referrer))
+      referrer_host, referrer_path = ViewsPerDay.split_referrer(request.referrer)
+      keys.concat([referrer_host, referrer_path])
+    else
+      keys.concat([nil, nil])
     end
+
+    # Add UTM parameters to the queue key
+    utm_params = extract_utm_parameters(request)
+    keys.concat([
+      utm_params[:utm_source],
+      utm_params[:utm_medium],
+      utm_params[:utm_campaign],
+      utm_params[:utm_term],
+      utm_params[:utm_content]
+    ])
+
     redis.hincrby(PAGE_QUEUE, keys.join(SEPARATOR).downcase, 1)
   end
 
@@ -80,8 +101,20 @@ module ActiveAnalytics
     date = Date.today
     redis.rename(PAGE_QUEUE, OLD_PAGE_QUEUE)
     redis.hscan_each(OLD_PAGE_QUEUE) do |key, count|
-      site, page, referrer_host, referrer_path = key.split(SEPARATOR)
-      ViewsPerDay.append(date: date, site: site, page: page, referrer_host: referrer_host, referrer_path: referrer_path, total: count.to_i)
+      site, page, referrer_host, referrer_path, utm_source, utm_medium, utm_campaign, utm_term, utm_content = key.split(SEPARATOR)
+      ViewsPerDay.append(
+        date: date,
+        site: site,
+        page: page,
+        referrer_host: referrer_host,
+        referrer_path: referrer_path,
+        utm_source: utm_source.presence,
+        utm_medium: utm_medium.presence,
+        utm_campaign: utm_campaign.presence,
+        utm_term: utm_term.presence,
+        utm_content: utm_content.presence,
+        total: count.to_i
+      )
     end
     redis.del(OLD_PAGE_QUEUE)
   end
@@ -95,5 +128,22 @@ module ActiveAnalytics
       BrowsersPerDay.append(date: date, site: site, name: name, version: version, total: count.to_i)
     end
     redis.del(OLD_BROWSER_QUEUE)
+  end
+
+  private
+
+  def self.extract_utm_parameters(request)
+    utm_params = {}
+
+    # Extract UTM parameters from query string
+    query_params = request.query_parameters || {}
+
+    utm_params[:utm_source] = query_params['utm_source'].presence
+    utm_params[:utm_medium] = query_params['utm_medium'].presence
+    utm_params[:utm_campaign] = query_params['utm_campaign'].presence
+    utm_params[:utm_term] = query_params['utm_term'].presence
+    utm_params[:utm_content] = query_params['utm_content'].presence
+
+    utm_params
   end
 end

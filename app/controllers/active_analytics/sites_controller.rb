@@ -15,6 +15,7 @@ module ActiveAnalytics
       @referrers = current_views_per_days.top.group_by_referrer_site
       @pages = current_views_per_days.top.group_by_page
       @browsers = BrowsersPerDay.filter_by(params).group_by_name.top
+      @utm_sources = current_views_per_days.top(10).group_by_utm_source
     end
   end
 end

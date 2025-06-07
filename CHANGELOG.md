@@ -1,5 +1,16 @@
 # Changelog of ActiveAnalytics
 
+## [Upcoming] UTM Support
+
+### Added
+-   UTM parameter tracking support
+    - Automatically captures utm_source, utm_medium, utm_campaign, utm_term, and utm_content parameters from URL query strings
+    - New UTM Analytics dashboard with breakdowns by sources, mediums, and campaigns
+    - UTM analytics integrated into main dashboard
+    - Detailed UTM parameter views with page drill-downs
+    - New database migration generated with proper Rails timestamp: `rails generate migration AddUtmSupportToActiveAnalyticsViewsPerDays`
+    - Works with both synchronous and asynchronous (Redis queue) recording modes
+
 ## Version 0.4.1 (2025-03-13)
 
 -   Shortened index name in migration to prevent argument error (index name too long)
